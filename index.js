@@ -10,7 +10,7 @@ navigator.mediaDevices.getUserMedia({
     audio: true
 }).then(stream => {
     const input = context.createMediaStreamSource(stream);
-    effect = hallway();
+    effect = hallway(); // change here for effect
     input.connect(effect);
     effect.connect(gain);
 }, error => {
