@@ -10,15 +10,40 @@ navigator.mediaDevices.getUserMedia({
     audio: true
 }).then(stream => {
     const input = context.createMediaStreamSource(stream);
-    effect = hallway(); // change here for effect
-    input.connect(effect);
-    effect.connect(gain);
+    plane(input); // change here for effect
 }, error => {
     console.log(error);
 });
 
+function plane(input){
+    var bufferSize = 4096;
+    var brownNoise = (function() {
+        var lastOut = 0.0;
+        var node = context.createScriptProcessor(bufferSize, 1, 1);
+        node.onaudioprocess = function(e) {
+            var output = e.outputBuffer.getChannelData(0);
+            for (var i = 0; i < bufferSize; i++) {
+                var white = Math.random() * 2 - 1;
+                output[i] = (lastOut + (0.02 * white)) / 1.02;
+                lastOut = output[i];
+                output[i] *= 3.5;
+            }
+        }
+        return node;
+    })();
+    // https://noisehack.com/generate-noise-web-audio-api/
+    brownGain = context.createGain();
+    brownGain.gain.setValueAtTime(.1, context.currentTime);
+    brownNoise.connect(brownGain);
+    brownGain.connect(gain);
+    var bp = context.createBiquadFilter();
+    bp.type = "bandpass";
+    bp.frequency.value = 1000;
+    input.connect(bp);
+    bp.connect(gain); 
+}
 
-function telephone() {
+function telephone(input) {
     var lp1 = context.createBiquadFilter();
     lp1.type = "lowpass";
     lp1.frequency.value = 1500;
@@ -34,18 +59,22 @@ function telephone() {
     var reverb = context.createConvolver();
     var compressor = context.createDynamicsCompressor();
     compressor.threshold.setValueAtTime(-50, context.currentTime);
+    var waveShaper = context.createWaveShaper();
+    waveShaper.curve = makeDistortionCurve(5);
     reverb.connect(compressor);
     gain.connect(compressor);
-    lp1.connect(gain);
     lp1.connect( hp1 );
     lp2.connect( hp1 );
     hp1.connect( hp2 );
-    return lp1
+    input.connect(lp1);
+    input.connect(waveShaper);
+    waveShaper.connect(gain);
+    lp1.connect(gain);
 }
 
 
 // https://www.youtube.com/watch?v=k1InjBvR3HQ used this tutorial and converted it to code
-function otherRoom(){
+function otherRoom(input){
     var lp = context.createBiquadFilter();
     lp.type = "lowpass";
     lp.frequency.value = 200;
@@ -64,13 +93,15 @@ function otherRoom(){
     distortion.oversample = '4x';
     gain.connect(distortion);
     distortion.connect(context.destination);
-    return lp;
+    input.connect(lp);
+    lp.connect(gain);
 }
 
-function hallway(){
+function hallway(input){
     var convolver = loadconnvolverbuffer('sounds/hall.wav');
     convolver.connect(gain);
-    return convolver;
+    input.connect(convolver);
+    convolver.connect(gain);
 }
 
 function loadconnvolverbuffer(filename){
