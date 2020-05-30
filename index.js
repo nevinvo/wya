@@ -10,10 +10,61 @@ navigator.mediaDevices.getUserMedia({
     audio: true
 }).then(stream => {
     const input = context.createMediaStreamSource(stream);
-    lagging(input); // change here for effect
+    underwater(input); // change here for effect
 }, error => {
     console.log(error);
 });
+
+var pitch = 1.0;
+var adder = .2;
+function underwater(input){
+    var grainSize = 2048;
+    pitchShifterProcessor = context.createScriptProcessor(grainSize, 1, 1);
+    pitchShifterProcessor.buffer = new Float32Array(grainSize * 2);
+    pitchShifterProcessor.grainWindow = hannWindow(grainSize);
+    pitchShifterProcessor.onaudioprocess = function (event) {
+        var inputData = event.inputBuffer.getChannelData(0);
+        var outputData = event.outputBuffer.getChannelData(0);
+        for (i = 0; i < inputData.length; i++) {
+            // Apply the window to the input buffer
+            inputData[i] *= this.grainWindow[i];
+            // Shift half of the buffer
+            this.buffer[i] = this.buffer[i + grainSize];
+            // Empty the buffer tail
+            this.buffer[i + grainSize] = 0.0;
+        }
+        if (pitch > 1.6){
+            adder = -.2;
+        }
+        if (pitch < 1){
+            adder = .2;
+        }
+        pitch += adder;
+        // Calculate the pitch shifted grain re-sampling and looping the input
+        var grainData = new Float32Array(grainSize * 2);
+        for (var i = 0, j = 0.0;
+             i < grainSize;
+             i++, j += pitch) {
+
+            var index = Math.floor(j) % grainSize;
+            var a = inputData[index];
+            var b = inputData[(index + 1) % grainSize];
+            grainData[i] += linearInterpolation(a, b, j % 1.0) * this.grainWindow[i];
+        }
+        // Copy the grain multiple times overlapping it
+        for (i = 0; i < grainSize; i += Math.round(grainSize)) {
+            for (j = 0; j <= grainSize; j++) {
+                this.buffer[i + j] += grainData[j];
+            }
+        }
+        // Output the first half of the buffer
+        for (i = 0; i < grainSize; i++) {
+            outputData[i] = this.buffer[i];
+        }
+    };
+    input.connect(pitchShifterProcessor);
+    pitchShifterProcessor.connect(gain);
+}
 
 //https://github.com/urtzurd/html-audio
 function lagging(input){
