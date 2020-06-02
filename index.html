@@ -5,10 +5,99 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     
     <style>
-
+      body{
+        background-color: #a7d0fc;
+        font-family: 'Helvetica';
+      }
+      .orange-div{
+        background-color: #ffb300;
+        margin: 10px;
+        padding: 10px;
+        text-align: center;
+      }
+      h1{
+        color: black;
+        margin: 0;
+      }
+      h2{
+        color: grey;
+        margin: 0;
+      }
+      h3{
+        margin: 0;
+        font-size: 20px;
+      }
+      .audio-btn{
+        width: 100px;
+        height: 100px;
+        background-color: #b259ff;
+        margin: 0 20px;
+        padding: 5px;
+      }
+      .flexbox{
+        display: flex;
+        justify-content: center;
+      }
+      .locations{
+        width: 70%;
+        float: left;
+      }
+      .current{
+        width: 28%;
+        float: left;
+        background-color: #b259ff;
+        margin: 10px;
+      }
+      .location-btn{
+        width: 30%;
+        height: 150px;
+        background-color: #b259ff;
+        margin: 5px;
+        padding: 5px;
+      }
+      .location-btn-div{
+        display:flex;
+        justify-content: space-around;
+        flex-wrap: wrap;
+      }
+      img{
+        width: 100%;
+        height: 300px;
+      }
     </style>
   </head>
   <body>
+    <div class='orange-div'>
+      <h1>WYA</h1>
+      <h2>Location Sound Emulator</h2>
+    </div>
+
+    <div class='flexbox'>
+      <input class='audio-btn' type="image" src="temp.png" />
+      <input class='audio-btn' type="image" src="temp.png" />
+    </div>
+
+    <div class="locations">
+      <div class='orange-div'>
+        <h3>Select a Location:</h3>
+      </div>
+      <div class='location-btn-div'>
+        <input class='location-btn' type="image" src="temp.png" />
+        <input class='location-btn' type="image" src="temp.png" />
+        <input class='location-btn' type="image" src="temp.png" />
+        <input class='location-btn' type="image" src="temp.png" />
+        <input class='location-btn' type="image" src="temp.png" />
+        <input class='location-btn' type="image" src="temp.png" />
+      </div>
+    </div>
+
+    <div class='current'>
+      <img src="temp.png" alt="Sound Effect">
+      <div class='orange-div'>
+        <h4>Description</h4>
+      </div>
+    </div>
+    
 
     <script src="index.js"></script>
   </body>
