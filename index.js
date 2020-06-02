@@ -9,11 +9,13 @@ window.onload=function(){
 navigator.mediaDevices.getUserMedia({
     audio: true
 }).then(stream => {
+    window.streamReference = stream;
     const input = context.createMediaStreamSource(stream);
     otherRoom(input); // change here for effect
 }, error => {
     console.log(error);
 });
+
 
 var pitch = 1.0;
 var adder = .1;
@@ -250,3 +252,14 @@ function makeDistortionCurve(amount) {
     }
     return curve;
   };
+
+
+  function stopStream() {
+    if (!window.streamReference) return;
+
+    window.streamReference.getAudioTracks().forEach(function(track) {
+        track.stop();
+    });
+
+    window.streamReference = null;
+}
