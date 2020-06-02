@@ -10,13 +10,13 @@ navigator.mediaDevices.getUserMedia({
     audio: true
 }).then(stream => {
     const input = context.createMediaStreamSource(stream);
-    underwater(input); // change here for effect
+    otherRoom(input); // change here for effect
 }, error => {
     console.log(error);
 });
 
 var pitch = 1.0;
-var adder = .2;
+var adder = .1;
 function underwater(input){
     var grainSize = 2048;
     pitchShifterProcessor = context.createScriptProcessor(grainSize, 1, 1);
@@ -34,10 +34,10 @@ function underwater(input){
             this.buffer[i + grainSize] = 0.0;
         }
         if (pitch > 1.6){
-            adder = -.2;
+            adder = -.1;
         }
         if (pitch < 1){
-            adder = .2;
+            adder = .1;
         }
         pitch += adder;
         // Calculate the pitch shifted grain re-sampling and looping the input
@@ -63,7 +63,11 @@ function underwater(input){
         }
     };
     input.connect(pitchShifterProcessor);
-    pitchShifterProcessor.connect(gain);
+    var lp = context.createBiquadFilter();
+    lp.type = "lowpass";
+    lp.frequency.value = 1000;
+    pitchShifterProcessor.connect(lp);
+    lp.connect(gain);
 }
 
 //https://github.com/urtzurd/html-audio
