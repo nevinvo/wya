@@ -64,6 +64,9 @@
         width: 100%;
         height: 300px;
       }
+      .highlight{
+        background-color: #7cd994 !important;
+      }
     </style>
   </head>
   <body>
@@ -82,11 +85,11 @@
         <h3>Select a Location:</h3>
       </div>
       <div class='location-btn-div'>
-        <input class='location-btn' id='telephone' type="image" src="temp.png" />
-        <input class='location-btn' id='otherroom' type="image" src="temp.png" />
-        <input class='location-btn' id='hall' type="image" src="temp.png" />
-        <input class='location-btn' id='lagging' type="image" src="temp.png" />
-        <input class='location-btn' id='underwater' type="image" src="temp.png" />
+        <input class='location-btn' name='Telephone' id='telephone' type="image" src="temp.png" onclick="selectEffect(this);" />
+        <input class='location-btn' name='From the Other Room' id='otherRoom' type="image" src="temp.png" onclick="selectEffect(this);" />
+        <input class='location-btn' name='Large Hallway' id='hallway' type="image" src="temp.png" onclick="selectEffect(this);" />
+        <input class='location-btn' name='Lagging' id='lagging' type="image" src="temp.png" onclick="selectEffect(this);" />
+        <input class='location-btn' name='Underwater' id='underwater' type="image" src="temp.png" onclick="selectEffect(this);" />
         <input class='location-btn' id='' type="image" src="temp.png" />
       </div>
     </div>
@@ -94,11 +97,11 @@
     <div class='current'>
       <img id='effect' src="temp.png" alt="Sound Effect">
       <div class='orange-div'>
-        <h4>Description</h4>
+        <h4 id='description'></h4>
       </div>
     </div>
     
-
+    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
     <script src="index.js"></script>
   </body>
 </html>
