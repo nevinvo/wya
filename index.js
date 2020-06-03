@@ -1,4 +1,11 @@
-var context, gain;
+var context, gain, osc;
+
+window.onload=function(){
+    context = new AudioContext();
+    gain = context.createGain();
+    gain.connect(context.destination);
+}
+
 
 function selectEffect(button){
     $(".highlight").removeClass("highlight");
@@ -6,13 +13,11 @@ function selectEffect(button){
     document.getElementById("effect").src = $(button).attr('src');
     document.getElementById("description").innerText = $(button).attr('name');
     stopStream();
+    if (osc){
+        osc.disconnect();
+        osc = null;
+    }
     makeSomeNoise($(button).attr('id'));
-}
-
-window.onload=function(){
-    context = new AudioContext();
-    gain = context.createGain();
-    gain.connect(context.destination);
 }
 
 
@@ -165,6 +170,7 @@ function plane(input){
     brownGain.gain.setValueAtTime(.1, context.currentTime);
     brownNoise.connect(brownGain);
     brownGain.connect(gain);
+    osc = brownNoise;
     var bp = context.createBiquadFilter();
     bp.type = "bandpass";
     bp.frequency.value = 1000;
@@ -224,6 +230,7 @@ function otherRoom(input){
     distortion.connect(context.destination);
     input.connect(lp);
     lp.connect(gain);
+    osc = distortion;
 }
 
 function hallway(input){
