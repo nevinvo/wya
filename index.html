@@ -3,18 +3,61 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
+
     <style>
+      @font-face {
+        font-family: Comfortaa;
+        src: url(images/Comfortaa.ttf);
+      }
+      .grid-container {
+        display: grid;
+        grid-template-columns: 200px 200px 200px 200px 200px;
+        grid-template-rows: 100px 100px 50px 200px 200px;
+        gap: 15px 15px;
+        grid-template-areas: "title title title title title" "control-panel control-panel control-panel control-panel control-panel" "heading heading heading main-selection main-selection" "selection-panels selection-panels selection-panels main-selection main-selection" "selection-panels selection-panels selection-panels main-selection main-selection";
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+        background: rgba(153, 153, 153, 0.7);
+        border-radius: 25px;
+      }
+
+      .title { grid-area: title; }
+      .control-panel { grid-area: control-panel; align-self: center;}
+      .heading { grid-area: heading; }
+      .main-selection { grid-area: main-selection; align-self: center; }
+      .selection-panels {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        gap: 1px 1px;
+        grid-template-areas: "panel1 panel2 panel3" "panel4 panel5 panel6";
+        grid-area: selection-panels;
+      }
+
+      .panel1 { grid-area: panel1; align-self: center;}
+      .panel2 { grid-area: panel2; align-self: center;}
+      .panel3 { grid-area: panel3; align-self: center;}
+      .panel4 { grid-area: panel4; align-self: center;}
+      .panel5 { grid-area: panel5; align-self: center;}
+      .panel6 { grid-area: panel6; align-self: center;}
+
       body{
+        background-image: url("images/background.png");
         background-color: #a7d0fc;
-        font-family: 'Helvetica';
+        font-family: Comfortaa;
       }
       .orange-div{
+        border-radius: 25px;
         background-color: #ffb300;
         margin: 10px;
         padding: 10px;
         text-align: center;
+        background: rgba(245, 215, 44, 0.7);
+        border: 3px solid #a2967b;
       }
+
       h1{
         color: black;
         margin: 0;
@@ -33,27 +76,35 @@
         background-color: #b259ff;
         margin: 0 20px;
         padding: 5px;
+        background: rgba(73, 141, 227, 0.7);
       }
       .flexbox{
         display: flex;
         justify-content: center;
+        align-self: center;
       }
       .locations{
         width: 70%;
         float: left;
       }
       .current{
-        width: 28%;
-        float: left;
         background-color: #b259ff;
         margin: 10px;
+        background: rgba(73, 141, 227, 0.7);
+        border-radius: 25px;
       }
+
       .location-btn{
-        width: 30%;
+        width: 150px;
+        max-width: 150px;
         height: 150px;
+        max-height: 150px;
         background-color: #b259ff;
         margin: 5px;
         padding: 5px;
+        border-radius: 25px;
+        background: rgba(73, 141, 227, 0.7);
+
       }
       .location-btn-div{
         display:flex;
@@ -69,39 +120,69 @@
       }
     </style>
   </head>
-  <body>
-    <div class='orange-div'>
-      <h1>WYA</h1>
-      <h2>Location Sound Emulator</h2>
+<body>
+  <div class="grid-container">
+    <div class="title">
+      <div class='orange-div'>
+        <h1>WYA</h1>
+        <h2>Location Sound Emulator</h2>
+      </div>
     </div>
-
-    <div class='flexbox'>
-      <input class='audio-btn' type="image" src="images/microphone.png" />
-      <input class='audio-btn' type="image" src="images/record.png" />
-    </div>
-
-    <div class="locations">
+    <div class="control-panel">
+      <div class='flexbox'>
+        <input class='audio-btn' type="image" src="images/microphone.png" />
+        <input class='audio-btn' type="image" src="images/record.png" />
+      </div></div>
+    <div class="heading">
       <div class='orange-div'>
         <h3>Select a Location:</h3>
       </div>
-      <div class='location-btn-div'>
-        <input class='location-btn' alt='Telephone' name='Telephone' id='telephone' type="image" src="images/phone.png" onclick="selectEffect(this);" />
-        <input class='location-btn' alt='From the Other Room' name='From the Other Room' id='otherRoom' type="image" src="images/room.png" onclick="selectEffect(this);" />
-        <input class='location-btn' alt='Large Hallway' name="In a Hallway" id='hallway' type="image" src="images/hall.png" onclick="selectEffect(this);" />
-        <input class='location-btn' alt='Lagging' name='Lagging' id='lagging' type="image" src="images/wifi.png" onclick="selectEffect(this);" />
-        <input class='location-btn' alt='Underwater' name='Underwater' id='underwater' type="image" src="images/underwater.png" onclick="selectEffect(this);" />
-        <input class='location-btn' alt='In an Airplane' name='In an Airplane' id='plane' type="image" src="images/airplane.png" onclick="selectEffect(this);" />
+    </div>
+
+    <div class="main-selection">
+      <div class='current'>
+        <img id='effect' src="images/temp.png" alt="Sound Effect">
+        <div class='orange-div'>
+          <h3 id='description'></h3>
+        </div>
       </div>
     </div>
 
-    <div class='current'>
-      <img id='effect' src="images/temp.png" alt="Sound Effect">
-      <div class='orange-div'>
-        <h4 id='description'></h4>
+    <div class="selection-panels">
+      <div class="panel1">
+        <div class='location-btn-div'>
+             <input class='location-btn' alt='Telephone' name='Telephone' id='telephone' type="image" src="images/phone.png" onclick="selectEffect(this);" />
+        </div>
+      </div>
+      <div class="panel2">
+        <div class='location-btn-div'>
+          <input class='location-btn' alt='From the Other Room' name='From the Other Room' id='otherRoom' type="image" src="images/room.png" onclick="selectEffect(this);" />
+        </div>
+      </div>
+      <div class="panel3">
+        <div class='location-btn-div'>
+          <input class='location-btn' alt='Large Hallway' name="In a Hallway" id='hallway' type="image" src="images/hall.png" onclick="selectEffect(this);" />
+        </div>
+      </div>
+      <div class="panel4">
+        <div class='location-btn-div'>
+          <input class='location-btn' alt='Lagging' name='Lagging' id='lagging' type="image" src="images/wifi.png" onclick="selectEffect(this);" />
+        </div>
+      </div>
+      <div class="panel5">
+        <div class='location-btn-div'>
+          <input class='location-btn' alt='Underwater' name='Underwater' id='underwater' type="image" src="images/underwater.png" onclick="selectEffect(this);" />
+        </div>
+      </div>
+      <div class="panel6">
+        <div class='location-btn-div'>
+              <input class='location-btn' alt='In an Airplane' name='In an Airplane' id='plane' type="image" src="images/airplane.png" onclick="selectEffect(this);" />
+        </div>
       </div>
     </div>
-    
-    <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
-    <script src="index.js"></script>
+  </div>
+  <script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+  <script src="index.js"></script>
+
   </body>
 </html>
